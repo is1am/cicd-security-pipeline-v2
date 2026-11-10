@@ -1,0 +1,49 @@
+name: Security Pipeline
+
+# Пайплайн запускается при каждом push в main и при каждом pull request
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  # SAST: статический анализ исходного кода
+  sast:
+    name: SAST (Bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt
+      # -ll: задание падает, если есть находки уровня MEDIUM и выше
+      - run: bandit -r app -ll
+
+  # SCA: проверка зависимостей по базе известных уязвимостей
+  sca:
+    name: SCA (pip-audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt
+      # задание падает, если хотя бы у одной зависимости есть известная уязвимость
+      - run: pip-audit -r requirements.txt
+
+  # Тесты ролевой модели: права доступа не должны сломаться при изменениях
+  tests:
+    name: Тесты RBAC (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - run: pytest -q

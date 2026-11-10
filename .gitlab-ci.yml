@@ -1,0 +1,23 @@
+# Тот же пайплайн для GitLab CI: три независимых задания на одной стадии
+image: python:3.12-slim
+
+stages:
+  - security
+
+sast:
+  stage: security
+  script:
+    - pip install -r requirements-dev.txt
+    - bandit -r app -ll
+
+sca:
+  stage: security
+  script:
+    - pip install -r requirements-dev.txt
+    - pip-audit -r requirements.txt
+
+tests:
+  stage: security
+  script:
+    - pip install -r requirements.txt -r requirements-dev.txt
+    - pytest -q

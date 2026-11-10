@@ -1,0 +1,25 @@
+============================= test session starts =============================
+platform win32 -- Python 3.10.7, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\islam\Desktop\Клиент-серверные технологии и их безопасность\ПР5_CICD_Security_v2\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\islam\Desktop\Клиент-серверные технологии и их безопасность\ПР5_CICD_Security_v2
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.16.0, platformdirs-4.12.4
+collecting ... collected 8 items
+
+tests/test_rbac.py::test_request_without_token_is_rejected PASSED        [ 12%]
+tests/test_rbac.py::test_public_is_available_to_every_role PASSED        [ 25%]
+tests/test_rbac.py::test_admin_can_create_user PASSED                    [ 37%]
+tests/test_rbac.py::test_user_cannot_open_admin_endpoint PASSED          [ 50%]
+tests/test_rbac.py::test_moderator_sees_audit_but_not_admin PASSED       [ 62%]
+tests/test_rbac.py::test_role_change_applies_without_new_token PASSED    [ 75%]
+tests/test_rbac.py::test_user_cannot_promote_himself PASSED              [ 87%]
+tests/test_rbac.py::test_user_cannot_read_foreign_profile PASSED         [100%]
+
+============================== warnings summary ===============================
+.venv\lib\site-packages\fastapi\testclient.py:1
+  C:\Users\islam\Desktop\Клиент-серверные технологии и их безопасность\ПР5_CICD_Security_v2\.venv\lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 8 passed, 1 warning in 2.10s =========================

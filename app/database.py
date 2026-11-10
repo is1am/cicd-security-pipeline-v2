@@ -101,7 +101,7 @@ def create_tables():
 
 
 def find_user(username):
-    rows = query(f"SELECT * FROM users WHERE username = '{username}'")
+    rows = query("SELECT * FROM users WHERE username = ?", (username,))
     return rows[0] if rows else None
 
 

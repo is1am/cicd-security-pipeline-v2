@@ -1,0 +1,7 @@
+Тест 1 (позитивный): администратор создаёт пользователя
+
+POST /api/v1/admin/users    [токен пользователя admin]
+  тело запроса: {"username": "ivanov", "password": "Password1!", "role": "USER"}
+  ответ: 201 Created
+  {"id": 4, "username": "ivanov", "role": "USER"}
+

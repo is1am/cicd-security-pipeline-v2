@@ -1,0 +1,11 @@
+Тест 2 (негативный): рядовой сотрудник обращается к /api/v1/admin/users
+
+GET /api/v1/admin/users    [токен пользователя user]
+  ответ: 403 Forbidden
+  {"detail": "Недостаточно прав для выполнения операции"}
+
+POST /api/v1/admin/users    [токен пользователя user]
+  тело запроса: {"username": "hacker", "password": "Password1!", "role": "ADMIN"}
+  ответ: 403 Forbidden
+  {"detail": "Недостаточно прав для выполнения операции"}
+

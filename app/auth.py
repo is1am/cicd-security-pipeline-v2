@@ -1,5 +1,8 @@
 """Аутентификация (JWT) и авторизация (проверка ролей и разрешений)."""
 import hashlib
+import hmac
+import os
+import secrets
 import time
 
 import jwt
@@ -8,18 +11,25 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app import database
 
-SECRET_KEY = "supersecret123"
+# Секрет подписи берётся из переменной окружения; если она не задана,
+# при запуске создаётся случайный (токены живут до перезапуска сервера)
+SECRET_KEY = os.environ.get("JWT_SECRET") or secrets.token_hex(32)
 TOKEN_TTL = 3600  # срок жизни токена, секунд
+PBKDF2_ROUNDS = 200_000
 
 bearer = HTTPBearer(auto_error=False)
 
 
-def hash_password(password):
-    return hashlib.md5(password.encode()).hexdigest()
+def hash_password(password, salt=None):
+    """PBKDF2-SHA256 со случайной солью; хранится строка «соль$хеш»."""
+    salt = salt or secrets.token_hex(16)
+    digest = hashlib.pbkdf2_hmac("sha256", password.encode(), bytes.fromhex(salt), PBKDF2_ROUNDS)
+    return f"{salt}${digest.hex()}"
 
 
 def verify_password(password, stored):
-    return hash_password(password) == stored
+    salt = stored.split("$")[0]
+    return hmac.compare_digest(hash_password(password, salt), stored)
 
 
 def create_token(user_id):
